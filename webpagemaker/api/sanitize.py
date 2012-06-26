@@ -29,7 +29,7 @@ ALLOWED_ATTRS = {
     # be abused for SEO purposes?
     "meta": ["charset", "name", "content"],
     "*": ["class", "id", "style"],
-    "img": ["src", "width", "height"],
+    "img": ["src", "width", "height", "alt"],
     "a": ["href"],
     "base": ["href"],
     "iframe": ["src", "width", "height", "frameborder", "allowfullscreen"],
@@ -43,6 +43,9 @@ if bleach.VERSION < (1, 1, 1):
 # TODO: Eventually, we should upstream a patch to bleach that allows
 # CSS to go unsanitized, rather than monkeypatching the fix in like this.
 bleach.BleachSanitizer.sanitize_css = lambda self, style: style
+
+from html5lib.sanitizer import HTMLSanitizerMixin
+HTMLSanitizerMixin.allowed_protocols.extend(['data'])
 
 def _comment_sanitizing_stream(stream):
     for item in stream:
