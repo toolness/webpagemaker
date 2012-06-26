@@ -29,7 +29,7 @@ ALLOWED_ATTRS = {
     # be abused for SEO purposes?
     "meta": ["charset", "name", "content"],
     "*": ["class", "id"],
-    "img": ["src", "width", "height"],
+    "img": ["src", "width", "height", "alt"],
     "a": ["href"],
     "base": ["href"],
     "iframe": ["src", "width", "height", "frameborder", "allowfullscreen"],
@@ -39,6 +39,9 @@ ALLOWED_ATTRS = {
 if bleach.VERSION < (1, 1, 1):
     raise Exception("Please use simon wex's bleach fork for now: " +
                     "https://github.com/simonwex/bleach.git")
+
+from html5lib.sanitizer import HTMLSanitizerMixin
+HTMLSanitizerMixin.allowed_protocols.extend(['data'])
 
 def _comment_sanitizing_stream(stream):
     for item in stream:
