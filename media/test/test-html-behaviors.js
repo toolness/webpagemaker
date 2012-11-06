@@ -180,4 +180,15 @@ defineTests([
     endHTML: '<p>hi <audio><source src="http://foo.org/"></audio></p>',
     credits: ['AUDIO']
   });
+  
+  HTMLBehaviorTest("changed class attribute is credited", {
+    beginHTML: '<span>hi</span>',
+    endHTML: '<span class="foo">hi</span>',
+    credits: ['CLASS']
+  });
+
+  HTMLBehaviorTest("new empty class attribute is not credited", {
+    beginHTML: '<span>hi</span>',
+    endHTML: '<span class="">hi</span>'
+  });
 });

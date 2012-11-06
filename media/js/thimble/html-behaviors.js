@@ -43,6 +43,11 @@ define(function() {
   }
   
   var behaviorQueries = {
+    CLASS: function(doc) {
+      return select(doc, "[class]").filter(function(node) {
+        return (!!node.getAttribute("class").trim());
+      }).map(candidateFromAttr("class"));
+    },
     HYPERLINK: function(doc) {
       return select(doc, "a").filter(function(anchor) {
         return ((anchor.children.length ||
