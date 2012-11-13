@@ -1,0 +1,3 @@
+-r requirements/compiled.txt
+gunicorn==0.15.0
+dj-database-url==0.2.1
