@@ -18,6 +18,8 @@ DATABASES = {
 
 SESSION_COOKIE_SECURE = True
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Debugging displays nice error messages, but leaks memory. Set this to False
 # on all server instances and True only for development.
 DEBUG = TEMPLATE_DEBUG = ('DEBUG' in os.environ)
