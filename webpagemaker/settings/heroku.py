@@ -37,9 +37,10 @@ CACHES = {
     }
 }
 
-# Uncomment and replace this as necessary!
-SITE_URL = os.environ.get('SITE_URL',
-                          'http://localhost:%s' % os.environ['PORT'])
+if 'SITE_URL' in os.environ or 'PORT' in os.environ:
+    SITE_URL = os.environ.get('SITE_URL',
+                              'http://localhost:%s' % 
+                              os.environ.get('PORT', ''))
 
 if 'CLOPENBADGER_URL' in os.environ:
     CLOPENBADGER_URL = os.environ('CLOPENBADGER_URL')
