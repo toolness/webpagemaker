@@ -8,6 +8,7 @@ def throw(request):
     debugging information.
     """
 
+    request.META['IS_REQUEST_SECURE'] = request.is_secure()
     i_am_not_defined
 
 urlpatterns = patterns('',
