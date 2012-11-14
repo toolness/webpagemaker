@@ -10,9 +10,28 @@ import dj_database_url
 
 from .base import INSTALLED_APPS
 
+def configure_database_url():
+    """
+    If DATABASE_URL isn't in the environment, see if anything that
+    ends with DATABASE_URL is. If there is, set DATABASE_URL to its
+    value. This allows for seamless integration with e.g.
+    cleardb, which sets the CLEARDB_DATABASE_URL variable.
+    """
+    
+    if 'DATABASE_URL' not in os.environ:
+        print "DATABASE_URL not found in environment."
+        candidates = [name for name in os.environ
+                      if name.endswith('DATABASE_URL')]
+        if len(candidates) == 1:
+            print "Using %s instead." % candidates[0]
+            os.environ['DATABASE_URL'] = os.environ[candidates[0]]
+
+configure_database_url()
+
 INSTALLED_APPS.extend(['gunicorn'])
 
 DATABASES = {
+    # Pull from the DATABASE_URL environment variable.
     'default': dj_database_url.config(),
 }
 
