@@ -1,5 +1,5 @@
 import os
-import site
+#import site
 
 os.environ.setdefault('CELERY_LOADER', 'django')
 # NOTE: you can also set DJANGO_SETTINGS_MODULE in your environment to override
@@ -13,6 +13,13 @@ os.environ.setdefault('CELERY_LOADER', 'django')
 import manage
 
 import django.core.handlers.wsgi
-application = django.core.handlers.wsgi.WSGIHandler()
+django_app = django.core.handlers.wsgi.WSGIHandler()
+
+def application(environ, start_response):
+    # For some reason 'secure_scheme_headers' in gunicorn config
+    # is failing us, so we'll do it manually here.
+    if environ.get('HTTP_X_FORWARDED_PROTO') == 'https':
+        environ['wsgi.url_scheme'] = 'https'
+    return django_app(environ, start_response)
 
 # vim: ft=python
