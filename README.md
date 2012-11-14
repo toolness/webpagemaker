@@ -86,6 +86,36 @@ Whenever you create a new terminal session, you'll need to re-run
   [mysql]: http://dev.mysql.com/downloads/
   [virtualenv]: http://pypi.python.org/pypi/virtualenv
 
+## Heroku/12-factor Deployment
+
+Thimble supports deployment to Heroku/[12-factor][]. Assuming you've
+already got the app running locally, have installed the [Heroku toolbelt][], 
+and have set up a Heroku user account, you can use the following commands
+from the root of the repository to deploy.
+
+```bash
+# Initialize the virtual environment.
+$ source .virtualenv/bin/activate
+# Install heroku-specific dependencies.
+$ pip install -r requirements.txt
+# Heroku requires pushing master, so make a branch.
+$ git checkout -b master development
+$ heroku create
+$ heroku addons:add cleardb:ignite
+$ git push heroku master
+$ heroku run python manage.py syncdb
+$ heroku run python manage.py migrate
+```
+
+At this point, you should be able to run `heroku open` and see your
+app running. If things fail, try `heroku logs`, and consult the
+[Getting Started with Django on Heroku][herokudjango] guide for more
+assistance.
+
+  [12-factor]: http://12factor.net/
+  [Heroku toolbelt]: https://toolbelt.heroku.com/
+  [herokudjango]: https://devcenter.heroku.com/articles/django
+
 ## Troubleshooting
 
 ### Mac OS X
