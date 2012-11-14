@@ -102,7 +102,7 @@ $ pip install -r requirements.txt
 $ git checkout -b master development
 $ heroku create
 $ heroku addons:add cleardb:ignite
-$ heroku config:add DEV= DEBUG= SECRET_KEY=lol
+$ heroku config:add SECRET_KEY=u SITE_URL=https://meh.herokuapp.com
 $ git push heroku master
 $ heroku run python manage.py syncdb
 $ heroku run python manage.py migrate
