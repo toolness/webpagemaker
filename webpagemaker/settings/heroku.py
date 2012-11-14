@@ -43,6 +43,9 @@ DEBUG = TEMPLATE_DEBUG = ('DEBUG' in os.environ)
 # instances and False on stage/prod.
 DEV = ('DEV' in os.environ)
 
+# We need to always be able to serve static files when deploying to Heroku.
+SERVE_STATIC_FILES = True
+
 # Make this unique, and don't share it with anybody.  It cannot be blank.
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 

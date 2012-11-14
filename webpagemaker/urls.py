@@ -35,8 +35,20 @@ urlpatterns = patterns('',
     (r'^browserid/', include(browserid_ajax.urls))
 )
 
-## In DEBUG mode, serve media files through Django.
-if settings.DEBUG:
+if not hasattr(settings, 'SERVE_STATIC_FILES'):
+    settings.SERVE_STATIC_FILES = settings.DEBUG
+
+# Potentially serve media files through Django.
+#
+# TODO: We probably shouldn't be using django.views.static here
+# because the documentation constantly claims that it's probably
+# insecure. However, its claim that static files served through
+# Django are always grossly inefficient is not necessarily true, for
+# the same reason that serving rendered templates through Django
+# aren't grossly inefficient: if we front our app with a cache like
+# Varnish and provide proper headers, we can easily ensure that our
+# static files are served efficiently.
+if settings.SERVE_STATIC_FILES:
     from django.views.static import serve as orig_static_serve
 
     def debug_static_serve(request, path, document_root):
@@ -64,7 +76,8 @@ if settings.DEBUG:
          debug_static_serve,
          {'document_root': settings.LEARNING_PROJECTS_STATIC_ROOT}),
     )
-    
+
+if settings.DEBUG:
     from . import debugging
     
     urlpatterns += debugging.urlpatterns
