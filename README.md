@@ -102,6 +102,7 @@ $ pip install -r requirements.txt
 $ git checkout -b master development
 $ heroku create
 $ heroku addons:add cleardb:ignite
+$ heroku config:add DEV= DEBUG= SECRET_KEY=lol
 $ git push heroku master
 $ heroku run python manage.py syncdb
 $ heroku run python manage.py migrate
@@ -110,7 +111,8 @@ $ heroku run python manage.py migrate
 At this point, you should be able to run `heroku open` and see your
 app running. If things fail, try `heroku logs`, and consult the
 [Getting Started with Django on Heroku][herokudjango] guide for more
-assistance.
+assistance. Also see `webpagemaker/settings/heroku.py` for more information
+on environment variables.
 
   [12-factor]: http://12factor.net/
   [Heroku toolbelt]: https://toolbelt.heroku.com/
