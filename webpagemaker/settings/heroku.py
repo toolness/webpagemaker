@@ -39,6 +39,8 @@ DATABASES = {
 # on all server instances and True only for development.
 DEBUG = TEMPLATE_DEBUG = ('DEBUG' in os.environ)
 
+SESSION_COOKIE_SECURE = ('SESSION_COOKIE_SECURE' in os.environ)
+
 # Is this a development instance? Set this to True on development/master
 # instances and False on stage/prod.
 DEV = ('DEV' in os.environ)
