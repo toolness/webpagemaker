@@ -15,6 +15,7 @@ from cors import development_cors
 
 from . import models
 from . import sanitize
+from . import metrics
 
 from .decorators import throttle_view
 
@@ -29,7 +30,8 @@ BLOCKED_MSG = "<h1>Your browser is not supported.</h1>" + \
               "<p>To view a page created with Thimble, we recommend " + \
               "using the latest version of Internet Explorer, Firefox " + \
               "or Chrome.</p>"
-     
+METRICS = metrics.Recorder()
+
 def generate_etag(content, algorithm=hashlib.sha1):
     """
     Generate an etag for a page by calculating a collision-resistant
@@ -47,22 +49,37 @@ def generate_etag(content, algorithm=hashlib.sha1):
 @throttle_view(methods=['POST',], duration=1)
 def publish_page(request):
     if not request.POST.get('html', ''):
+        METRICS.trackBadPublication_noBody()
         return HttpResponseBadRequest("HTML body expected.")
+
     if len(request.POST['html']) > settings.MAX_PUBLISHED_PAGE_SIZE:
+        METRICS.trackBadPublication_tooLarge()
         return HttpResponse("Request Entity Too Large", status=413)
+
     if request.POST.get('original-url', ''):
         parsed = urlparse(request.POST['original-url'])
         if parsed.scheme not in ['http', 'https']:
+            METRICS.trackBadPublication_noHTTP()
             return HttpResponseBadRequest("Invalid origin URL.")
+
     trunc = models.Page._meta.get_field_by_name('original_url')[0].max_length
     original_url = request.POST.get('original-url', '')[:trunc]
     creator = None
+
     if request.user.is_authenticated():
         creator = request.user
     page = models.Page(html=request.POST['html'],
                        original_url=original_url,
                        creator=creator)
     page.save()
+
+    # Record a publication:
+    METRICS.trackNewPublication()
+
+    # Also record what the new publication count is. Using
+    # deltas might lead to disparacies due to concurrent publications,
+    # so we simply grab the total number of known pages.
+    METRICS.setTotalPublications(models.Page.objects.count())
 
     # After saving, we now have an ID, which we can use to generate a
     # unique short URL ID and then re-save.
